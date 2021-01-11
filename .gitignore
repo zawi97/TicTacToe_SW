@@ -1,0 +1,8 @@
+#ignore large .dll files
+*.dll
+
+#ignore text files
+*.txt
+
+#ignore .xml
+*.xml

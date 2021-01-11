@@ -94,7 +94,7 @@ namespace Projekt_KiK
                     {
                         //wykrywanie kształtów
                         var temp = imagePB1.SmoothGaussian(5).Convert<Gray, byte>().
-                            ThresholdBinaryInv(new Gray(90), new Gray(255));
+                            ThresholdBinaryInv(new Gray(100), new Gray(255));
 
                         VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
                         Mat m = new Mat();
@@ -127,7 +127,7 @@ namespace Projekt_KiK
                             textBox_x.Text = srodek.X.ToString();
                             textBox_y.Text = srodek.Y.ToString();
                             CvInvoke.Circle(imagePB3, srodek, 4, new MCvScalar(50, 127, 127), 2);
-                            CvInvoke.DrawContours(imagePB2, contours, -1, new MCvScalar(0, 0, 255), 2);
+                            //CvInvoke.DrawContours(imagePB2, contours, -1, new MCvScalar(0, 0, 255), 2);
                             
                             int cx = -((srodek.X)) + pictureBox2.Width;
                             int cy = -((srodek.Y)) + pictureBox2.Height;
@@ -147,11 +147,8 @@ namespace Projekt_KiK
                                     plansza[px, py] = 1;
                                 }
                                
-                                //plansza[srodek.X / 1000, srodek.Y / 1000] = 1;
-                                //plansza[1, 1] = 1;
-
                             }
-                            pictureBox3.Image = imagePB3.Bitmap;
+                            pictureBox3.Image = imagePB1.Bitmap;
                         }
                     }
                     catch (Exception ex)
@@ -159,14 +156,13 @@ namespace Projekt_KiK
                         MessageBox.Show(ex.Message);
                     }
 
-
                 }
                 else
                 {
                     bool losowanie = true;
                     textBox1.Text = "X";
 
-                    /*while (losowanie)
+                    while (losowanie)
                     {
                         int[] randomowe = new int[2];
                         for (int i = 0; i < 2; i++)
@@ -183,7 +179,7 @@ namespace Projekt_KiK
                             plansza[rand_x, rand_y] = 2;
                             losowanie = false;
                         }
-                    }*/
+                    }
 
                 }
                 rysowanie();
@@ -251,7 +247,7 @@ namespace Projekt_KiK
 
         private void rysowanie()
         {
-            //imagePB2.SetZero();
+            imagePB2.SetZero();
             
             CvInvoke.Line(imagePB2, new Point(100, 0), new Point(100, 300), new MCvScalar(0, 255, 255), 1);
             CvInvoke.Line(imagePB2, new Point(200, 0), new Point(200, 300), new MCvScalar(0, 255, 255), 1);
@@ -270,7 +266,6 @@ namespace Projekt_KiK
                             CvInvoke.Circle(imagePB2, P, 25, new MCvScalar(255, 0, 0), 2);
                             break;
                         case 2:
-                            //imagePB2.Draw(Cross2DF((30, 30), 2, 2), Gray(255), 2);
                             CvInvoke.Line(imagePB2, new Point(P.X - 20, P.Y + 20), new Point(P.X + 20, P.Y - 20), new MCvScalar(0, 255, 0), 2);
                             CvInvoke.Line(imagePB2, new Point(P.X + 20, P.Y + 20), new Point(P.X - 20, P.Y - 20), new MCvScalar(0, 255, 0), 2);
                             break;

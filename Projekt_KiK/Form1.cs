@@ -127,11 +127,13 @@ namespace Projekt_KiK
                             textBox_x.Text = srodek.X.ToString();
                             textBox_y.Text = srodek.Y.ToString();
                             CvInvoke.Circle(imagePB3, srodek, 4, new MCvScalar(50, 127, 127), 2);
-                            CvInvoke.DrawContours(imagePB3, contours, -1, new MCvScalar(0, 0, 255), 2);
+                            CvInvoke.DrawContours(imagePB2, contours, -1, new MCvScalar(0, 0, 255), 2);
                             
-                            int px = (srodek.X ) / 100;
-                            int py = (srodek.Y ) / 100;
-                            
+                            int cx = -((srodek.X)) + pictureBox2.Width;
+                            int cy = -((srodek.Y)) + pictureBox2.Height;
+
+                            int px = (x - 0)/100;
+                            int py = (y - 0)/100;
 
                             if (approx.Size > 6)     //czy to kółko?
                             {
@@ -182,11 +184,17 @@ namespace Projekt_KiK
                             losowanie = false;
                         }
                     }*/
-                    rysowanie();
-                    czy_wygrana();
-                    
+
                 }
+                rysowanie();
+                czy_wygrana();
             }
+        }
+
+        public void pola (int hx, int hy)
+        {
+          //  if () plansza[px, py] = 1; ;
+           // else if () ;
         }
 
         void winDetected(int figure)
@@ -243,7 +251,7 @@ namespace Projekt_KiK
 
         private void rysowanie()
         {
-            imagePB2.SetZero();
+            //imagePB2.SetZero();
             
             CvInvoke.Line(imagePB2, new Point(100, 0), new Point(100, 300), new MCvScalar(0, 255, 255), 1);
             CvInvoke.Line(imagePB2, new Point(200, 0), new Point(200, 300), new MCvScalar(0, 255, 255), 1);

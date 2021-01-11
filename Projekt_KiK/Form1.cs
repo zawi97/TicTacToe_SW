@@ -19,22 +19,23 @@ namespace Projekt_KiK
     
     public partial class Form1 : Form
     {
-        bool gra = true;
+        bool gra = true;                //gra w trakcie
         int[,] plansza = new int[3, 3]; //0 - puste; 1 - kółko; 2 - krzyżyk
-        int tura = 0;
-        bool startRecording = false;
-        Random rnd = new Random();
+        int tura = 0;                   //kolejne tury. Parzyste - kółko; Nieparzyste - X
+        bool startRecording = false;    //do kamery
+        Random rnd = new Random();      //inicjaliozacja RNG
 
 
-        Image<Bgr, byte> imagePB1, imagePB2;
+        Image<Bgr, byte> imagePB1, imagePB2;        //inicjalizacja pictureboxów
         VideoCapture cap;
 
         public Form1()
         {
             InitializeComponent();
-            imagePB1 = new Image<Bgr, byte>(new Size(300, 300));
+            imagePB1 = new Image<Bgr, byte>(new Size(300, 300));        //wyiary 300x300
             imagePB2 = new Image<Bgr, byte>(new Size(300, 300));
 
+                //obsługa kamery
             try
             {
                 cap = new VideoCapture(0);
@@ -64,7 +65,8 @@ namespace Projekt_KiK
 
         private void button1_Click(object sender, EventArgs e)
         {
-            gra = true;
+            //gra = true;
+            Array.Clear(plansza, 0, 9);
             startRecording = !startRecording;
             if (startRecording)
             {
@@ -84,13 +86,14 @@ namespace Projekt_KiK
             tura++;
             if (gra)
             {
-                if (tura % 2 == 1)
+                if (tura % 2 == 0)
                 {
                     textBox1.Text = "O";
                     try
                     {
+                        //wykrywanie kształtów
                         var temp = imagePB1.SmoothGaussian(5).Convert<Gray, byte>().
-                            ThresholdBinaryInv(new Gray(100), new Gray(255));
+                            ThresholdBinaryInv(new Gray(120), new Gray(255));
 
                         VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
                         Mat m = new Mat();
@@ -106,20 +109,21 @@ namespace Projekt_KiK
 
                             CvInvoke.DrawContours(imagePB1, contours, i, new MCvScalar(0, 0, 255), 2);
 
+                            //środki geometryczne figur
                             var moments = CvInvoke.Moments(contours[i]);
                             int x = (int)(moments.M10 / moments.M00);
                             int y = (int)(moments.M01 / moments.M00);
-
+                            Point srodek = new Point(x, y);
                             //int plansza_x = Math.Round()
                             //int plansza_y
-
-                            if (contours.Size > 10)
+                            //plansza[1, 1] = 1;
+                            if (contours.Size > 10)     //czy to kółko?
                             {
-                                plansza[(x - 50) / 100, (y - 50) / 100] = 2;
+                                plansza[(x - 50) / 100, (y - 50) / 100] = 1;
+                                //plansza[srodek.X / 1000, srodek.Y / 1000] = 1;
+                                //plansza[1, 1] = 1;
                             }
-
                         }
-
                     }
                     catch (Exception ex)
                     {
@@ -143,34 +147,74 @@ namespace Projekt_KiK
                             losowanie = false;
                         }
                     }
-
-                    czy_wygrana();
                     rysowanie();
+                    czy_wygrana();
+                    
                 }
             }
         }
 
-        private void czy_wygrana() 
-        { 
-            
+        void winDetected(int figure)
+        {
+            if (figure == 0) // boxmessage = "wygrały krzyżyki"
+                if (figure == 1) // boxmessage = "wygrały kółka"
+}
+
+        void czy_wygrana()
+        {
+            for (int i = 0; i < 3; i++) { // detect horizontal pattern
+                if (plansza[i,0] == 2 && plansza[i,1] == 2 && plansza[i,2] == 2) winDetected(2); // horizontal pattern of crosses
+                if (plansza[i,0] == 1 && plansza[i,1] == 1 && plansza[i,2] == 1) winDetected(1); // horizontal pattern of circles  
+            }
+
+
+            for (int j = 0; j < 3; j++) { // detect vertical pattern
+                    if (plansza[0,j] == 2 && plansza[1,j] == 2 && plansza[2,j] == 2) winDetected(0); // vertical pattern of crosses
+                    if (plansza[0,j] == 2 && plansza[1,j] == 2 && plansza[2,j] == 2) winDetected(1); // vertical pattern of circles                  
+            }
+
+            for (int j = 0; j < 3; j++)
+            { // detect crosswise pattern (from left to right downwards)
+                for (int i = 0; i < 3; i++)
+                {
+                    if (plansza[i][j] == plansza[i + 1][j + 1] == plansza[i + 2][j + 2] == 0) winDetected(0); // crosswise pattern (from left to right downwards) of crosses
+                    if (plansza[i][j] == plansza[i + 1][j + 1] == plansza[i + 2][j + 2] == 1) winDetected(1); // crosswise pattern (from left to right downwards) of circles  
+                }
+            }
+
+            for (int j = 2; j < 5; j++)
+            { // detect crosswise pattern (from right to left downwards)
+                for (int i = 0; i < 3; i++)
+                {
+                    if (plansza[i][j] == plansza[i + 1][j - 1] == plansza[i + 2][j - 2] == 0) winDetected(0); // crosswise pattern (from right to left downwards) of crosses
+                    if (plansza[i][j] == plansza[i + 1][j - 1] == plansza[i + 2][j - 2] == 1) winDetected(1); // crosswise pattern (from right to left downwards) of circles  
+                }
+            }
         }
 
         private void rysowanie()
         {
-            for (int x = 0; x < 3; x++)
+            imagePB2.SetZero();
+            CvInvoke.Line(imagePB2, new Point(100, 0), new Point(100, 300), new MCvScalar(255, 255, 255), 1);
+            CvInvoke.Line(imagePB2, new Point(200, 0), new Point(200, 300), new MCvScalar(255, 255, 255), 1);
+            CvInvoke.Line(imagePB2, new Point(0, 100), new Point(300, 100), new MCvScalar(255, 255, 255), 1);
+            CvInvoke.Line(imagePB2, new Point(0, 200), new Point(300, 200), new MCvScalar(255, 255, 255), 1);
+
+            for (int dx = 0; dx < 3; dx++)
             {
-                for (int y = 0; y < 3; y++)
+                for (int dy = 0; dy < 3; dy++)
                 {
                     Point P = new Point();
-                    P.X = x * 100 + 50; P.Y = y * 100 + 50;
-                    switch (plansza[x,y])
+                    P.X = dx * 100 + 50; P.Y = dy * 100 + 50;     //punkty środka rysowanego okręgu
+                    switch (plansza[dx,dy])
                     {
                         case 1:
-                            CvInvoke.Circle(imagePB2, P, 50, new MCvScalar(255, 0, 0), 5);
+                            CvInvoke.Circle(imagePB2, P, 20, new MCvScalar(255, 0, 0), 2);
                             break;
                         case 2:
-
-
+                            //imagePB2.Draw(Cross2DF((30, 30), 2, 2), Gray(255), 2);
+                            CvInvoke.Line(imagePB2, new Point(P.X - 20, P.Y + 20), new Point(P.X + 20, P.Y - 20), new MCvScalar(0, 255, 0), 2);
+                            CvInvoke.Line(imagePB2, new Point(P.X + 20, P.Y + 20), new Point(P.X - 20, P.Y - 20), new MCvScalar(0, 255, 0), 2);
                             break;
                         default:
                             break;
@@ -182,6 +226,8 @@ namespace Projekt_KiK
 
 
         }
+
+        
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {

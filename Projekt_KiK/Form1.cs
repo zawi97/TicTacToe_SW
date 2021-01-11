@@ -23,10 +23,10 @@ namespace Projekt_KiK
         int[,] plansza = new int[3, 3]; //0 - puste; 1 - kółko; 2 - krzyżyk
         int tura = 0;                   //kolejne tury. Parzyste - kółko; Nieparzyste - X
         bool startRecording = false;    //do kamery
-        Random rnd = new Random();      //inicjaliozacja RNG
+        Random rng = new Random();      //inicjaliozacja RNG
 
 
-        Image<Bgr, byte> imagePB1, imagePB2;        //inicjalizacja pictureboxów
+        Image<Bgr, byte> imagePB1, imagePB2, imagePB3;        //inicjalizacja pictureboxów
         VideoCapture cap;
 
         public Form1()
@@ -34,6 +34,7 @@ namespace Projekt_KiK
             InitializeComponent();
             imagePB1 = new Image<Bgr, byte>(new Size(300, 300));        //wyiary 300x300
             imagePB2 = new Image<Bgr, byte>(new Size(300, 300));
+            imagePB3 = new Image<Bgr, byte>(new Size(300, 300));
 
                 //obsługa kamery
             try
@@ -93,14 +94,21 @@ namespace Projekt_KiK
                     {
                         //wykrywanie kształtów
                         var temp = imagePB1.SmoothGaussian(5).Convert<Gray, byte>().
-                            ThresholdBinaryInv(new Gray(120), new Gray(255));
+                            ThresholdBinaryInv(new Gray(90), new Gray(255));
 
                         VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
                         Mat m = new Mat();
 
                         CvInvoke.FindContours(temp, contours, m, Emgu.CV.CvEnum.RetrType.External,
                             Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
+                        
 
+                        imagePB3 = imagePB1.SmoothGaussian(5);
+                        Image<Gray, Byte> grayImage = temp;
+                        CvInvoke.DrawContours(grayImage, contours, -1, new MCvScalar(255,255,0), 1);
+                        pictureBox3.Image = grayImage.Bitmap;
+
+                     
                         for (int i = 0; i < contours.Size; i++)
                         {
                             double perimiter = CvInvoke.ArcLength(contours[i], true);
@@ -113,16 +121,35 @@ namespace Projekt_KiK
                             var moments = CvInvoke.Moments(contours[i]);
                             int x = (int)(moments.M10 / moments.M00);
                             int y = (int)(moments.M01 / moments.M00);
-                            Point srodek = new Point(x, y);
+                            Point srodek = new Point((int)(moments.M10 / moments.M00), (int)(moments.M01 / moments.M00));
                             //int plansza_x = Math.Round()
                             //int plansza_y
-                            //plansza[1, 1] = 1;
-                            if (contours.Size > 10)     //czy to kółko?
+                            textBox_x.Text = srodek.X.ToString();
+                            textBox_y.Text = srodek.Y.ToString();
+                            CvInvoke.Circle(imagePB3, srodek, 4, new MCvScalar(50, 127, 127), 2);
+                            CvInvoke.DrawContours(imagePB3, contours, -1, new MCvScalar(0, 0, 255), 2);
+                            
+                            int px = (srodek.X ) / 100;
+                            int py = (srodek.Y ) / 100;
+                            
+
+                            if (approx.Size > 6)     //czy to kółko?
                             {
-                                plansza[(x - 50) / 100, (y - 50) / 100] = 1;
+                                //plansza[(x - 50) / 100, (y - 50) / 100] = 1;
+                               
+                                //CvInvoke.PutText(imagePB3, "Circle", srodek, Emgu.CV.CvEnum.FontFace.HersheySimplex, 1.0, new MCvScalar(0, 0, 255), 2);
+                                CvInvoke.DrawContours(imagePB3, contours, -1, new MCvScalar(0, 0, 255), 2);
+                                //CvInvoke.Circle(imagePB3, srodek, 4, new MCvScalar(50, 127, 127), 2);
+                                if (plansza[px,py] == 0)
+                                {
+                                    plansza[px, py] = 1;
+                                }
+                               
                                 //plansza[srodek.X / 1000, srodek.Y / 1000] = 1;
                                 //plansza[1, 1] = 1;
+
                             }
+                            pictureBox3.Image = imagePB3.Bitmap;
                         }
                     }
                     catch (Exception ex)
@@ -137,16 +164,24 @@ namespace Projekt_KiK
                     bool losowanie = true;
                     textBox1.Text = "X";
 
-                    while (losowanie)
+                    /*while (losowanie)
                     {
-                        int rand_x = rnd.Next(3);
-                        int rand_y = rnd.Next(3);
-                        if (plansza[rand_x, rand_x] == 0)
+                        int[] randomowe = new int[2];
+                        for (int i = 0; i < 2; i++)
                         {
-                            plansza[rand_x, rand_x] = 2;
+                            
+                            randomowe[i] = rng.Next(3);
+                        }
+                        
+
+                        int rand_x = randomowe[0];
+                        int rand_y = randomowe[1];
+                        if (plansza[rand_x, rand_y] == 0)
+                        {
+                            plansza[rand_x, rand_y] = 2;
                             losowanie = false;
                         }
-                    }
+                    }*/
                     rysowanie();
                     czy_wygrana();
                     
@@ -156,8 +191,16 @@ namespace Projekt_KiK
 
         void winDetected(int figure)
         {
-            if (figure == 0) // boxmessage = "wygrały krzyżyki"
-                if (figure == 1) // boxmessage = "wygrały kółka"
+            if (figure == 2)
+            {
+                ruch_button.Text = "Wygrały Krzyżyki"; // boxmessage = "wygrały krzyżyki"
+                gra = false;
+            }
+            if (figure == 1)
+            {
+                ruch_button.Text = "Wygrały Kółka"; // boxmessage = "wygrały kółka"
+                gra = false;
+            }
 }
 
         void czy_wygrana()
@@ -169,16 +212,22 @@ namespace Projekt_KiK
 
 
             for (int j = 0; j < 3; j++) { // detect vertical pattern
-                    if (plansza[0,j] == 2 && plansza[1,j] == 2 && plansza[2,j] == 2) winDetected(0); // vertical pattern of crosses
-                    if (plansza[0,j] == 2 && plansza[1,j] == 2 && plansza[2,j] == 2) winDetected(1); // vertical pattern of circles                  
+                    if (plansza[0,j] == 2 && plansza[1,j] == 2 && plansza[2,j] == 2) winDetected(2); // vertical pattern of crosses
+                    if (plansza[0,j] == 1 && plansza[1,j] == 1 && plansza[2,j] == 1) winDetected(1); // vertical pattern of circles                  
             }
 
-            for (int j = 0; j < 3; j++)
+            if (plansza[0, 0] == 1 && plansza[1, 1] == 1 && plansza[2, 2] == 1) winDetected(1);
+            if (plansza[0, 0] == 2 && plansza[1, 1] == 2 && plansza[2, 2] == 2) winDetected(2);
+
+            if (plansza[2, 0] == 1 && plansza[1, 1] == 1 && plansza[0, 2] == 1) winDetected(1);
+            if (plansza[2, 0] == 2 && plansza[1, 1] == 2 && plansza[0, 2] == 2) winDetected(2);
+
+            /*for (int j = 0; j < 3; j++)
             { // detect crosswise pattern (from left to right downwards)
                 for (int i = 0; i < 3; i++)
                 {
-                    if (plansza[i][j] == plansza[i + 1][j + 1] == plansza[i + 2][j + 2] == 0) winDetected(0); // crosswise pattern (from left to right downwards) of crosses
-                    if (plansza[i][j] == plansza[i + 1][j + 1] == plansza[i + 2][j + 2] == 1) winDetected(1); // crosswise pattern (from left to right downwards) of circles  
+                    if (plansza[i, j] == plansza[i + 1, j + 1] == plansza[i + 2, j + 2] == 0) winDetected(0); // crosswise pattern (from left to right downwards) of crosses
+                    if (plansza[i, j] == plansza[i + 1, j + 1] == plansza[i + 2, j + 2] == 1) winDetected(1); // crosswise pattern (from left to right downwards) of circles  
                 }
             }
 
@@ -189,17 +238,18 @@ namespace Projekt_KiK
                     if (plansza[i][j] == plansza[i + 1][j - 1] == plansza[i + 2][j - 2] == 0) winDetected(0); // crosswise pattern (from right to left downwards) of crosses
                     if (plansza[i][j] == plansza[i + 1][j - 1] == plansza[i + 2][j - 2] == 1) winDetected(1); // crosswise pattern (from right to left downwards) of circles  
                 }
-            }
+            }*/
         }
 
         private void rysowanie()
         {
             imagePB2.SetZero();
-            CvInvoke.Line(imagePB2, new Point(100, 0), new Point(100, 300), new MCvScalar(255, 255, 255), 1);
-            CvInvoke.Line(imagePB2, new Point(200, 0), new Point(200, 300), new MCvScalar(255, 255, 255), 1);
-            CvInvoke.Line(imagePB2, new Point(0, 100), new Point(300, 100), new MCvScalar(255, 255, 255), 1);
-            CvInvoke.Line(imagePB2, new Point(0, 200), new Point(300, 200), new MCvScalar(255, 255, 255), 1);
-
+            
+            CvInvoke.Line(imagePB2, new Point(100, 0), new Point(100, 300), new MCvScalar(0, 255, 255), 1);
+            CvInvoke.Line(imagePB2, new Point(200, 0), new Point(200, 300), new MCvScalar(0, 255, 255), 1);
+            CvInvoke.Line(imagePB2, new Point(0, 100), new Point(300, 100), new MCvScalar(0, 255, 255), 1);
+            CvInvoke.Line(imagePB2, new Point(0, 200), new Point(300, 200), new MCvScalar(0, 255, 255), 1);
+            
             for (int dx = 0; dx < 3; dx++)
             {
                 for (int dy = 0; dy < 3; dy++)
@@ -209,7 +259,7 @@ namespace Projekt_KiK
                     switch (plansza[dx,dy])
                     {
                         case 1:
-                            CvInvoke.Circle(imagePB2, P, 20, new MCvScalar(255, 0, 0), 2);
+                            CvInvoke.Circle(imagePB2, P, 25, new MCvScalar(255, 0, 0), 2);
                             break;
                         case 2:
                             //imagePB2.Draw(Cross2DF((30, 30), 2, 2), Gray(255), 2);
@@ -227,7 +277,15 @@ namespace Projekt_KiK
 
         }
 
-        
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load_1(object sender, EventArgs e)
+        {
+
+        }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {

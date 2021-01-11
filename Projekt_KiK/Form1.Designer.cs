@@ -34,8 +34,14 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ruch_button = new System.Windows.Forms.Button();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.textBox_x = new System.Windows.Forms.TextBox();
+            this.textBox_y = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -93,11 +99,57 @@
             this.ruch_button.UseVisualStyleBackColor = true;
             this.ruch_button.Click += new System.EventHandler(this.button1_Click_1);
             // 
+            // pictureBox3
+            // 
+            this.pictureBox3.BackColor = System.Drawing.Color.Black;
+            this.pictureBox3.Location = new System.Drawing.Point(1, 410);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(300, 300);
+            this.pictureBox3.TabIndex = 5;
+            this.pictureBox3.TabStop = false;
+            // 
+            // textBox_x
+            // 
+            this.textBox_x.Location = new System.Drawing.Point(368, 433);
+            this.textBox_x.Name = "textBox_x";
+            this.textBox_x.Size = new System.Drawing.Size(100, 20);
+            this.textBox_x.TabIndex = 6;
+            // 
+            // textBox_y
+            // 
+            this.textBox_y.Location = new System.Drawing.Point(368, 469);
+            this.textBox_y.Name = "textBox_y";
+            this.textBox_y.Size = new System.Drawing.Size(100, 20);
+            this.textBox_y.TabIndex = 7;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(327, 433);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(12, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "x";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(327, 472);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(12, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "y";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 418);
+            this.ClientSize = new System.Drawing.Size(615, 712);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.textBox_y);
+            this.Controls.Add(this.textBox_x);
+            this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.ruch_button);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
@@ -105,10 +157,10 @@
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Name = "Form1";
-            this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -122,6 +174,11 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button ruch_button;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.TextBox textBox_x;
+        private System.Windows.Forms.TextBox textBox_y;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 

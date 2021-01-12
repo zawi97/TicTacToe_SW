@@ -122,7 +122,6 @@ namespace Projekt_KiK
                             Point srodek = new Point((int)(moments.M10 / moments.M00), (int)(moments.M01 / moments.M00));
 
                             CvInvoke.Circle(imagePB1, srodek, 4, new MCvScalar(50, 127, 127), 2);
-                            //CvInvoke.DrawContours(imagePB2, contours, -1, new MCvScalar(0, 0, 255), 2);
                                                         
                             int px = (x - 0)/(300/size);
                             int py = (y - 0)/(300/size);
@@ -136,7 +135,6 @@ namespace Projekt_KiK
                                     plansza[px, py] = 1;
                                 }
                             }
-                            //pictureBox3.Image =
                         }
                     }
                     catch (Exception ex)
@@ -185,16 +183,16 @@ namespace Projekt_KiK
         }
         void czy_wygrana()
         {
-            for (int i = 0; i < size; i++) { // detect horizontal pattern              
+            for (int i = 0; i < size; i++) { //wykrywanie wygranej w poziomie             
                 if (plansza[i,0] == 2 && plansza[i,1] == 2 && plansza[i,2] == 2 && plansza[i, 3] == 2 && plansza[i, 4] == 2) winDetected(2); // horizontal pattern of crosses
                 if (plansza[i,0] == 1 && plansza[i,1] == 1 && plansza[i,2] == 1 && plansza[i, 3] == 1 && plansza[i, 4] == 1) winDetected(1); // horizontal pattern of circles  
             }
 
-            for (int j = 0; j < 3; j++) { // detect vertical pattern
+            for (int j = 0; j < size; j++) { //wykrywanie wygranej w pionie
                 if (plansza[0,j] == 2 && plansza[1,j] == 2 && plansza[2,j] == 2 && plansza[3, j] == 3 && plansza[4, j] == 4) winDetected(2); // vertical pattern of crosses
                 if (plansza[0,j] == 1 && plansza[1,j] == 1 && plansza[2,j] == 1 && plansza[3, j] == 1 && plansza[4, j] == 1) winDetected(1); // vertical pattern of circles                  
             }
-
+            //Wykrywanie wygranej po przekątnych
             if (plansza[0, 0] == 1 && plansza[1, 1] == 1 && plansza[2, 2] == 1 && plansza[3, 3] == 1 && plansza[4, 4] == 1) winDetected(1);
             if (plansza[0, 0] == 2 && plansza[1, 1] == 2 && plansza[2, 2] == 2 && plansza[3, 3] == 2 && plansza[4, 4] == 2) winDetected(2);
 

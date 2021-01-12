@@ -102,7 +102,7 @@ namespace Projekt_KiK
                         CvInvoke.FindContours(temp, contours, m, Emgu.CV.CvEnum.RetrType.External,
                             Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
                         
-                        //imagePB3 = imagePB1.SmoothGaussian(5);
+                        imagePB3 = imagePB1.SmoothGaussian(5);
                         Image<Gray, Byte> grayImage = temp;
                         CvInvoke.DrawContours(grayImage, contours, -1, new MCvScalar(255,255,0), 1);
                         pictureBox3.Image = grayImage.Bitmap;
@@ -121,29 +121,22 @@ namespace Projekt_KiK
                             int y = (int)(moments.M01 / moments.M00);
                             Point srodek = new Point((int)(moments.M10 / moments.M00), (int)(moments.M01 / moments.M00));
 
-                            textBox_x.Text = srodek.X.ToString();
-                            textBox_y.Text = srodek.Y.ToString();
                             CvInvoke.Circle(imagePB1, srodek, 4, new MCvScalar(50, 127, 127), 2);
                             //CvInvoke.DrawContours(imagePB2, contours, -1, new MCvScalar(0, 0, 255), 2);
-                            
-                            int cx = -((srodek.X)) + pictureBox2.Width;
-                            int cy = -((srodek.Y)) + pictureBox2.Height;
-
+                                                        
                             int px = (x - 0)/(300/size);
                             int py = (y - 0)/(300/size);
 
                             if (approx.Size > 6)     //czy to kółko?
                             {
-                                //CvInvoke.PutText(imagePB3, "Circle", srodek, Emgu.CV.CvEnum.FontFace.HersheySimplex, 1.0, new MCvScalar(0, 0, 255), 2);
                                 CvInvoke.DrawContours(imagePB3, contours, -1, new MCvScalar(0, 0, 255), 2);
-                                //CvInvoke.Circle(imagePB3, srodek, 4, new MCvScalar(50, 127, 127), 2);
+                                CvInvoke.Circle(imagePB3, srodek, 4, new MCvScalar(50, 127, 127), 2);
                                 if (plansza[px,py] == 0)
                                 {
                                     plansza[px, py] = 1;
                                 }
-                               
                             }
-                            pictureBox3.Image = imagePB1.Bitmap;
+                            //pictureBox3.Image =
                         }
                     }
                     catch (Exception ex)
@@ -207,24 +200,6 @@ namespace Projekt_KiK
 
             if (plansza[4, 0] == 1 && plansza[3, 1] == 1 && plansza[2, 2] == 1 && plansza[1, 3] == 1 && plansza[0, 4] == 1) winDetected(1);
             if (plansza[4, 0] == 2 && plansza[3, 1] == 2 && plansza[2, 2] == 2 && plansza[1, 3] == 2 && plansza[0, 4] == 2) winDetected(2);
-
-            /*for (int j = 0; j < 3; j++)
-            { // detect crosswise pattern (from left to right downwards)
-                for (int i = 0; i < 3; i++)
-                {
-                    if (plansza[i, j] == plansza[i + 1, j + 1] == plansza[i + 2, j + 2] == 0) winDetected(0); // crosswise pattern (from left to right downwards) of crosses
-                    if (plansza[i, j] == plansza[i + 1, j + 1] == plansza[i + 2, j + 2] == 1) winDetected(1); // crosswise pattern (from left to right downwards) of circles  
-                }
-            }
-
-            for (int j = 2; j < 5; j++)
-            { // detect crosswise pattern (from right to left downwards)
-                for (int i = 0; i < 3; i++)
-                {
-                    if (plansza[i, j] == 1 && plansza[i + 1, j - 1] == 1 && plansza[i + 2, j - 2] == 1) winDetected(0); // crosswise pattern (from right to left downwards) of crosses
-                    if (plansza[i, j] == plansza[i + 1, j - 1] == plansza[i + 2, j - 2] == 1) winDetected(1); // crosswise pattern (from right to left downwards) of circles  
-                }
-            }*/
         }
 
         private void rysuj_plansze()

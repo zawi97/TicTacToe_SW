@@ -56,7 +56,7 @@
             // pictureBox2
             // 
             this.pictureBox2.BackColor = System.Drawing.Color.Black;
-            this.pictureBox2.Location = new System.Drawing.Point(307, 54);
+            this.pictureBox2.Location = new System.Drawing.Point(318, 53);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(300, 300);
             this.pictureBox2.TabIndex = 0;
@@ -74,7 +74,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(307, 372);
+            this.textBox1.Location = new System.Drawing.Point(309, 372);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(26, 20);
             this.textBox1.TabIndex = 2;
@@ -83,7 +83,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(238, 375);
+            this.label1.Location = new System.Drawing.Point(240, 375);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 3;
@@ -110,22 +110,22 @@
             // 
             // textBox_x
             // 
-            this.textBox_x.Location = new System.Drawing.Point(368, 433);
+            this.textBox_x.Location = new System.Drawing.Point(345, 433);
             this.textBox_x.Name = "textBox_x";
-            this.textBox_x.Size = new System.Drawing.Size(100, 20);
+            this.textBox_x.Size = new System.Drawing.Size(63, 20);
             this.textBox_x.TabIndex = 6;
             // 
             // textBox_y
             // 
-            this.textBox_y.Location = new System.Drawing.Point(368, 469);
+            this.textBox_y.Location = new System.Drawing.Point(345, 469);
             this.textBox_y.Name = "textBox_y";
-            this.textBox_y.Size = new System.Drawing.Size(100, 20);
+            this.textBox_y.Size = new System.Drawing.Size(63, 20);
             this.textBox_y.TabIndex = 7;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(327, 433);
+            this.label2.Location = new System.Drawing.Point(327, 436);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(12, 13);
             this.label2.TabIndex = 8;
@@ -144,7 +144,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 712);
+            this.ClientSize = new System.Drawing.Size(644, 717);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox_y);
